@@ -5,19 +5,71 @@ import java.util.*;
 import java.util.regex.*;
 
 class Book {
-    String id;
-    String title;
-    String author;
-    int year;
-    String genre;
-    Price price;
-    String isbn;
-    String format;
-    Publisher publisher;
-    String language;
-    String translator;
-    List<String> awards = new ArrayList<>();
-    List<Review> reviews = new ArrayList<>();
+    private String id;
+    private String title;
+    private String author;
+    private int year;
+    private String genre;
+    private Price price;
+    private String isbn;
+    private String format;
+    private Publisher publisher;
+    private String language;
+    private String translator;
+    private List<String> awards = new ArrayList<>();
+    private List<Review> reviews = new ArrayList<>();
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    public void setYear(int year) {
+        this.year = year;
+    }
+
+    public void setGenre(String genre) {
+        this.genre = genre;
+    }
+
+    public void setPrice(Price price) {
+        this.price = price;
+    }
+
+    public void setIsbn(String isbn) {
+        this.isbn = isbn;
+    }
+
+    public void setFormat(String format) {
+        this.format = format;
+    }
+
+    public void setPublisher(Publisher publisher) {
+        this.publisher = publisher;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
+    }
+
+    public void setTranslator(String translator) {
+        this.translator = translator;
+    }
+
+    public List<String> getAwards() {
+        return awards;
+    }
+
+    public List<Review> getReviews() {
+        return reviews;
+    }
 
     @Override
     public String toString() {
@@ -25,12 +77,20 @@ class Book {
                 + "\nprice: " + price + "\nisbn: " + isbn + "\nformat: " + format + "\npublisher: " + publisher
                 + "\nlanguage: " + language + "\ntranslator: " + translator + "\nawards: " + awards + "\nreviews: " + reviews + "\n";
     }
-
 }
 
+
 class Price {
-    String currency;
-    double amount;
+    private String currency;
+    private double amount;
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
+
+    public void setAmount(double amount) {
+        this.amount = amount;
+    }
 
     @Override
     public String toString() {
@@ -38,9 +98,18 @@ class Price {
     }
 }
 
+
 class Publisher {
-    String name;
-    Address address;
+    private String name;
+    private Address address;
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
+    }
 
     @Override
     public String toString() {
@@ -48,9 +117,18 @@ class Publisher {
     }
 }
 
+
 class Address {
-    String city;
-    String country;
+    private String city;
+    private String country;
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
 
     @Override
     public String toString() {
@@ -58,16 +136,30 @@ class Address {
     }
 }
 
+
 class Review {
-    String user;
-    int rating;
-    String comment;
+    private String user;
+    private int rating;
+    private String comment;
+
+    public void setUser(String user) {
+        this.user = user;
+    }
+
+    public void setRating(int rating) {
+        this.rating = rating;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
 
     @Override
     public String toString() {
         return "Review user=" + user + ", rating=" + rating + ", comment=" + comment;
     }
 }
+
 public class Main {
 
     public static void main(String[] args) {
@@ -91,46 +183,47 @@ public class Main {
 
             while (bookMatcher.find()) {
                 Book currentBook = new Book();
-                currentBook.id = bookMatcher.group(1);
+                currentBook.setId(bookMatcher.group(1));
                 String bookContent = bookMatcher.group(2);
 
-                currentBook.title = extractValue(bookContent, "title");
-                currentBook.author = extractValue(bookContent, "author");
-                currentBook.year = Integer.parseInt(extractValue(bookContent, "year"));
-                currentBook.genre = extractValue(bookContent, "genre");
+                currentBook.setTitle(extractValue(bookContent, "title"));
+                currentBook.setAuthor(extractValue(bookContent, "author"));
+                currentBook.setYear(Integer.parseInt(extractValue(bookContent, "year")));
+                currentBook.setGenre(extractValue(bookContent, "genre"));
 
                 Pattern pricePattern = Pattern.compile("<price currency=\"([^\"]+)\">(\\d+\\.\\d+)</price>");
                 Matcher priceMatcher = pricePattern.matcher(bookContent);
                 if (priceMatcher.find()) {
-                    currentBook.price = new Price();
-                    currentBook.price.currency = priceMatcher.group(1);
-                    currentBook.price.amount = Double.parseDouble(priceMatcher.group(2));
+                    Price price = new Price();
+                    price.setCurrency(priceMatcher.group(1));
+                    price.setAmount(Double.parseDouble(priceMatcher.group(2)));
+                    currentBook.setPrice(price);
                 }
 
-                currentBook.isbn = extractValue(bookContent, "isbn");
-                currentBook.format = extractValue(bookContent, "format");
-                currentBook.language = extractValue(bookContent, "language");
-                currentBook.translator = extractValue(bookContent, "translator");
+                currentBook.setIsbn(extractValue(bookContent, "isbn"));
+                currentBook.setFormat(extractValue(bookContent, "format"));
+                currentBook.setLanguage(extractValue(bookContent, "language"));
+                currentBook.setTranslator(extractValue(bookContent, "translator"));
 
                 Pattern awardPattern = Pattern.compile("<award>(.*?)</award>");
                 Matcher awardMatcher = awardPattern.matcher(bookContent);
                 while (awardMatcher.find()) {
-                    currentBook.awards.add(awardMatcher.group(1));
+                    currentBook.getAwards().add(awardMatcher.group(1));  // Добавление награды
                 }
 
                 String publisherContent = extractValue(bookContent, "publisher");
                 if (publisherContent != null) {
                     Publisher publisher = new Publisher();
-                    publisher.name = extractValue(publisherContent, "name");
+                    publisher.setName(extractValue(publisherContent, "name"));  // Установка имени издателя
 
                     String addressContent = extractValue(publisherContent, "address");
                     if (addressContent != null) {
                         Address address = new Address();
-                        address.city = extractValue(addressContent, "city");
-                        address.country = extractValue(addressContent, "country");
-                        publisher.address = address;
+                        address.setCity(extractValue(addressContent, "city"));  // Установка города
+                        address.setCountry(extractValue(addressContent, "country"));  // Установка страны
+                        publisher.setAddress(address);  // Установка адреса издателя
                     }
-                    currentBook.publisher = publisher;
+                    currentBook.setPublisher(publisher);  // Установка издателя в книгу
                 }
 
                 Pattern reviewPattern = Pattern.compile("<review>(.*?)</review>");
@@ -138,10 +231,10 @@ public class Main {
                 while (reviewMatcher.find()) {
                     String reviewContent = reviewMatcher.group(1);
                     Review review = new Review();
-                    review.user = extractValue(reviewContent, "user");
-                    review.rating = Integer.parseInt(extractValue(reviewContent, "rating"));
-                    review.comment = extractValue(reviewContent, "comment");
-                    currentBook.reviews.add(review);
+                    review.setUser(extractValue(reviewContent, "user"));
+                    review.setRating(Integer.parseInt(extractValue(reviewContent, "rating")));
+                    review.setComment(extractValue(reviewContent, "comment"));
+                    currentBook.getReviews().add(review);
                 }
 
                 books.add(currentBook);
